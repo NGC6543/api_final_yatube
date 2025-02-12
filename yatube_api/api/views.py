@@ -58,24 +58,19 @@ class FollowViewSet(viewsets.ModelViewSet):
         user = self.request.user
         following_username = self.request.data.get('following')
 
-        if not following_username:
-            return Response({"detail": "Following field is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        following = get_object_or_404(User, username=following_username)
-        # try:
-        #     following = User.objects.get(username=following_username)
-        # except User.DoesNotExist:
-        #     raise ValidationError(
-        #         {"detail": "The user to follow does not exist."}
-        #     )
+        # following = get_object_or_404(User, username=following_username)
+        try:
+            following = User.objects.get(username=following_username)
+        except User.DoesNotExist:
+            raise ValidationError(
+                {"detail": "The user to follow does not exist."}
+            )
 
         if user == following:
-            # raise ValidationError(
-            #     {"detail": "A user cannot follow themselves."}
-            # )
-            return Response({"detail": "A user cannot follow themselves."}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError(
+                {"detail": "A user cannot follow themselves."}
+            )
 
         if Follow.objects.filter(user=user, following=following).exists():
-            # raise ValidationError({"detail": "You are already following this user."})
-            return Response({"detail": "You are already following this user."}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({"detail": "You are already following this user."})
         serializer.save(user=user, following=following)
