@@ -53,3 +53,15 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following'
     )
+
+    class Meta:
+        constraints = (
+            models.CheckConstraint(
+                name='Пользователь не может подписаться на самого себя.',
+                check=~models.Q(user=models.F('following'))
+            ),
+            models.UniqueConstraint(
+                name='Нельзя подписаться на пользователя дважды.',
+                fields=('user', 'following')
+            )
+        )
