@@ -5,7 +5,7 @@ from rest_framework.pagination import (
     PageNumberPagination,
     LimitOffsetPagination
 )
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -71,11 +71,13 @@ class FollowApi(APIView):
 
         following = get_object_or_404(User, username=following_username)
 
+        # Проверяем была ли ранее подписка на этого же пользователя.
         if Follow.objects.filter(
             user=request.user, following=following
         ).exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        # Проверяем подписывается ли пользователь на самого себя.
         if request.user == following:
             raise ValidationError(
                 'Пользователь не может подписаться на самого себя.'
