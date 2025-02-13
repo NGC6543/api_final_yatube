@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
-
-from posts.models import Comment, Follow, Group, Post, User
+from posts.models import Comment, Follow, Group, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -31,38 +30,12 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'slug', 'description')
 
 
-# class FollowSerializer(serializers.ModelSerializer):
-#     user = SlugRelatedField(slug_field='username', read_only=True)
-#     # following = SlugRelatedField(slug_field='username')
-#     following = serializers.SerializerMethodField(read_only=True)
-
-#     class Meta:
-#         model = Follow
-#         fields = ('user', 'following')
-#         # read_only_fields = ('following',)
-
-#     # def get_user(self, obj):
-#     #     return obj.user.username
-
-#     def get_following(self, obj):
-#         return obj.followers.username
-    
-    # def validate(self, data):
-    #     print(data.get('user'))
-    #     # Ensuring that both user and following are not None or empty
-    #     # if not data.get('user'):
-    #     #     raise serializers.ValidationError("User field is required.")
-    #     if not data.get('following'):
-    #         raise serializers.ValidationError("Following field is required.")
-    #     return data
-
-
 class FollowSerializer(serializers.ModelSerializer):
     user = SlugRelatedField(
         slug_field='username',
         read_only=True
     )
-    following = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField(required=False)
 
     class Meta:
         model = Follow
