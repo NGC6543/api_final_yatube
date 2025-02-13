@@ -13,6 +13,7 @@ class PostAdmin(admin.ModelAdmin):
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('pk', 'title', 'slug', 'description')
 
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Comment)
